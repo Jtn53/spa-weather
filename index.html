@@ -59,17 +59,55 @@
   <!-- Header -->
   <header>
     <div class="row">
-      <div class="col-sm-offset-3 col-sm-6">
+      <div id="main-div" class="col-sm-offset-3 col-sm-6">
         <h2>Search for a city</h2>
-        <div id="custom-search-input">
+        <!--Search Bar-->
+        <div id="searchbar-div">
           <div class="input-group col-md-12">
-            <input type="text" class="form-control input-lg" placeholder="Vancouver BC" />
+            <input id="searchbar-input" type="text" class="form-control input-lg" placeholder="ex: Vancouver BC" />
             <span class="input-group-btn">
               <button class="btn btn-info btn-lg" type="button">
-                <i class="glyphicon glyphicon-search" id="searchButton"></i>
+                <i class="glyphicon glyphicon-search" id="search-button"></i>
               </button>
             </span>
           </div>
+        </div>
+
+        <!--Search Results (Handlebars script)-->
+        <div id="weather-display">
+          <script id="weather-display-script" type="text/x-handlebars-template">
+            <div class="col-sm-">
+              {{> weather-partial}}
+            </div>
+            <button id="forecast-button" type="button" class="btn btn-info">View 24 hour forecast</button>
+          </script>
+          <script id="weather-display-partial" type="text/x-handlebars-template">
+              <h3>{{name}}'s weather as of {{dt}}</h3>
+              {{#weather}}{{imgLink icon}}{{/weather}}
+          </script>
+        </div>
+
+        <!-- 24 hour Forecast display -->
+        <div id="forecast-display">
+          <script id="forecast-display-script" type="text/x-handlebars-template">
+            <div>
+              {{> forecast-partial}}
+            </div>
+            <button id="weather-button" type="button" class="btn btn-info">View current weather</button>
+          </script>
+          <script id="forecast-display-partial" type="text/x-handlebars-template">
+            <h3>{{city.name}}'s 24 hour forecast</h3>
+            {{#list}}
+            <div class="col-md-3">
+              <h4>{{dt_txt}}</h4>
+              <h4>{{main.temp}}</h4>
+              {{#weather}}
+              {{imgLink icon}}
+              <h4>{{main}}</h4>
+              {{/weather}}
+            </div>
+            {{/list}}
+          </script>
         </div>
       </div>
     </div>
@@ -79,9 +117,8 @@
   <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
   <script src="./js/script.js"></script>
   <!-- Bootstrap Core JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"/>
-
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
 
 </body>
 
