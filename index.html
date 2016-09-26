@@ -45,7 +45,7 @@
             <a href="#page-top"></a>
           </li>
           <li class="page-scroll">
-            <a href="#github">Contact</a>
+            <a href="https://github.com/Jtn53/spa-weather">GitHub</a>
           </li>
         </ul>
       </div>
@@ -58,7 +58,8 @@
   <header>
     <div class="row">
       <div id="main-div" class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8">
-        <h2>Search for a city</h2>
+        <h1>Simple Weather</h1>
+        <h5>Search for a city</h5>
         <!--Search Bar-->
         <div id="searchbar-div">
           <div class="input-group col-md-12">
@@ -71,26 +72,30 @@
           </div>
         </div>
 
-        <!--Search Results (Handlebars script)-->
+        <!-- Current weather display -->
         <div id="weather-display">
           <script id="weather-display-script" type="text/x-handlebars-template">
             {{> weather-partial}}
           </script>
           <script id="weather-display-partial" type="text/x-handlebars-template">
-            <h4 class="text-center">{{name}}'s current weather</h4>
-            <h5 class="text-center">{{dt}}</h5>
-            <div class="row">
-              <div class="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4">
-                <div class="col-xs-offset-2 col-xs-4">
-                  {{#weather}}{{weatherIconLarge id}}{{/weather}}
-                </div>
-                <div class="col-xs-6">
-                  <strong>{{#weather}}{{main}}{{/weather}}</strong><br>
-                  <h4>{{main.temp}}°C</h4><br>
+            {{#if errormessage}}
+              <h3>{{errormessage}}</h3>
+            {{else}}
+              <h4 class="text-center">{{name}}'s current weather</h4>
+              <h5 class="text-center">{{dt}}</h5>
+              <div class="row">
+                <div class="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4">
+                  <div class="col-xs-offset-2 col-xs-4">
+                    {{#weather}}{{weatherIconLarge id}}{{/weather}}
+                  </div>
+                  <div class="col-xs-6">
+                    <strong>{{#weather}}{{main}}{{/weather}}</strong><br>
+                    <h4>{{main.temp}}°C</h4><br>
+                  </div>
                 </div>
               </div>
-            </div>
-            <button id="forecast-button" type="button" class="btn btn-info col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4">View 24 hour forecast</button>
+              <button id="forecast-button" type="button" class="btn btn-info col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4">View 24 hour forecast</button>
+            {{/if}}
           </script>
         </div>
 
@@ -100,6 +105,9 @@
               {{> forecast-partial}}
           </script>
           <script id="forecast-display-partial" type="text/x-handlebars-template">
+            {{#if errormessage}}
+              <h3>{{errormessage}}</h3>
+            {{else}}
               <h4 class="text-center">{{city.name}}'s 24 hour forecast</h4>
               <div class="row">
                 <div class="col-sm-offset-1 col-sm-10 col-lg-offset-2 col-lg-8">
@@ -119,8 +127,8 @@
                 {{/list}}
                 </div>
               </div>
-            </div>
-            <button id="weather-button" type="button" class="btn btn-info btn btn-info col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4">View current weather</button>
+              <button id="weather-button" type="button" class="btn btn-info btn btn-info col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4">View current weather</button>
+            {{/if}}
           </script>
         </div>
       </div>

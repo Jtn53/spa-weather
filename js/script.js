@@ -20,7 +20,7 @@ $(document).ready(function() {
     );
   });
 
-  $("#search-button").click(function() {
+  $("#searchbar-div").on("click", "#search-button", function() {
     displayCurrentWeather();
   });
 
@@ -33,7 +33,7 @@ $(document).ready(function() {
   })
 
   /*
-  * Show the 24 hour forecast.
+  * Show the 24 hour forecast when button is clicked.
   * Have to use on() rather than click() because element doesn't exist until after DOM loaded
   */
   $("#weather-display").on("click", "#forecast-button", function() {
@@ -41,18 +41,38 @@ $(document).ready(function() {
   });
 
   /*
-  * Show the current weather.
+  * Show the current weather when button is clicked.
   * Have to use on() rather than click() because element doesn't exist until after DOM loaded
   */
   $("#forecast-display").on("click", "#weather-button", function() {
     displayCurrentWeather();
   });
 
+  function displayCurrentWeather() {
+    $("#forecast-display").fadeOut(function() {
+      $.get("http://api.openweathermap.org/data/2.5/weather?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
+        if (data.cod == 200) {
+          data["dt"] = convertUnixToDate(data.dt);
+          data["main"]["temp"] = Math.round(data.main.temp);
+          $("#weather-display").html(weatherDisplayTemplate(data));
+          $("#weather-display-partial").html(weatherPartialTemplate(data));
+          $("#weather-display").fadeIn();
+        }
+        else {
+          // couldn't retrieve data from openweather
+          data["errormessage"] = "Could not find city. Please try again.";
+          $("#weather-display").html(weatherDisplayTemplate(data));
+          $("#weather-display-partial").html(weatherPartialTemplate(data));
+          $("#weather-display").fadeIn();
+        }
+      });
+    });
+  }
+
   function displayForecast() {
     $("#weather-display").fadeOut(function () {
       $.get("http://api.openweathermap.org/data/2.5/forecast?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
         if (data.cod == 200) {
-
           data.list.splice(8); // too much data, remove forecasts except for first 8 (represents 24 hours)
 
           for (var i = 0; i < data.list.length; i++) {
@@ -67,24 +87,10 @@ $(document).ready(function() {
         }
         else {
           // couldn't retrieve data from openweather
-        }
-      });
-    });
-  }
-
-  function displayCurrentWeather() {
-    $("#forecast-display").fadeOut(function() {
-      $.get("http://api.openweathermap.org/data/2.5/weather?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
-        if (data.cod == 200) {
-          console.log(data);
-          data["dt"] = convertUnixToDate(data.dt);
-          data["main"]["temp"] = Math.round(data.main.temp);
-          $("#weather-display").html(weatherDisplayTemplate(data));
-          $("#weather-display-partial").html(weatherPartialTemplate(data));
-          $("#weather-display").fadeIn();
-        }
-        else {
-          // couldn't retrieve data from openweather
+          data["errormessage"] = "Could not find city. Please try again.";
+          $("#forecast-display").html(forecastDisplayTemplate(data));
+          $("#forecast-display-partial").html(forecastPartialTemplate(data));
+          $("#forecast-display").fadeIn();
         }
       });
     });
