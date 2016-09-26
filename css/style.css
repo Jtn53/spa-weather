@@ -1,3 +1,19 @@
 body {
   padding-top: 80px;
 }
+
+#weather-display{
+  margin-top: 20px;
+}
+
+#forecast-display {
+  margin-top: 20px;
+}
+
+#forecast-box {
+  border-bottom: 1px solid;
+}
+
+#weather-button {
+  margin-top: 20px;
+}

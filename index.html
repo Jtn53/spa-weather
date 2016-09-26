@@ -13,6 +13,7 @@
 
   <!-- Bootstrap Core CSS -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="./css/owfont-regular.css" rel="stylesheet" type="text/css">
   <link href="./css/style.css" rel="stylesheet"/>
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -44,10 +45,7 @@
             <a href="#page-top"></a>
           </li>
           <li class="page-scroll">
-            <a href="#about">About</a>
-          </li>
-          <li class="page-scroll">
-            <a href="#contact">Contact</a>
+            <a href="#github">Contact</a>
           </li>
         </ul>
       </div>
@@ -59,7 +57,7 @@
   <!-- Header -->
   <header>
     <div class="row">
-      <div id="main-div" class="col-sm-offset-3 col-sm-6">
+      <div id="main-div" class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8">
         <h2>Search for a city</h2>
         <!--Search Bar-->
         <div id="searchbar-div">
@@ -76,37 +74,53 @@
         <!--Search Results (Handlebars script)-->
         <div id="weather-display">
           <script id="weather-display-script" type="text/x-handlebars-template">
-            <div class="col-sm-">
-              {{> weather-partial}}
-            </div>
-            <button id="forecast-button" type="button" class="btn btn-info">View 24 hour forecast</button>
+            {{> weather-partial}}
           </script>
           <script id="weather-display-partial" type="text/x-handlebars-template">
-              <h3>{{name}}'s weather as of {{dt}}</h3>
-              {{#weather}}{{imgLink icon}}{{/weather}}
+            <h4 class="text-center">{{name}}'s current weather</h4>
+            <h5 class="text-center">{{dt}}</h5>
+            <div class="row">
+              <div class="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4">
+                <div class="col-xs-offset-2 col-xs-4">
+                  {{#weather}}{{weatherIconLarge id}}{{/weather}}
+                </div>
+                <div class="col-xs-6">
+                  <strong>{{#weather}}{{main}}{{/weather}}</strong><br>
+                  <h4>{{main.temp}}°C</h4><br>
+                </div>
+              </div>
+            </div>
+            <button id="forecast-button" type="button" class="btn btn-info col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4">View 24 hour forecast</button>
           </script>
         </div>
 
         <!-- 24 hour Forecast display -->
         <div id="forecast-display">
           <script id="forecast-display-script" type="text/x-handlebars-template">
-            <div>
               {{> forecast-partial}}
-            </div>
-            <button id="weather-button" type="button" class="btn btn-info">View current weather</button>
           </script>
           <script id="forecast-display-partial" type="text/x-handlebars-template">
-            <h3>{{city.name}}'s 24 hour forecast</h3>
-            {{#list}}
-            <div class="col-md-3">
-              <h4>{{dt_txt}}</h4>
-              <h4>{{main.temp}}</h4>
-              {{#weather}}
-              {{imgLink icon}}
-              <h4>{{main}}</h4>
-              {{/weather}}
+              <h4 class="text-center">{{city.name}}'s 24 hour forecast</h4>
+              <div class="row">
+                <div class="col-sm-offset-1 col-sm-10 col-lg-offset-2 col-lg-8">
+                {{#list}}
+                  <div class="col-sm-3 forecast-box">
+                    <h5 class="text-center">{{dt_txt}}</h5>
+                    <div class="row">
+                      <div class="col-xs-offset-3 col-xs-3 col-sm-offset-0 col-sm-5">
+                        {{#weather}}{{weatherIcon id}}{{/weather}}
+                      </div>
+                      <div class="col-xs-6 col-sm-offset-0 col-sm-7">
+                        <strong>{{#weather}}{{main}}{{/weather}}</strong><br>
+                        {{main.temp}}°C
+                      </div>
+                    </div>
+                  </div>
+                {{/list}}
+                </div>
+              </div>
             </div>
-            {{/list}}
+            <button id="weather-button" type="button" class="btn btn-info btn btn-info col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4">View current weather</button>
           </script>
         </div>
       </div>

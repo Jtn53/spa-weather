@@ -8,10 +8,15 @@ $(document).ready(function() {
   Handlebars.registerPartial("forecast-partial", $("#forecast-display-partial").html());
   var forecastPartialTemplate = Handlebars.compile($("#forecast-display-partial").html());
 
-
-  Handlebars.registerHelper('imgLink', function(iconID) {
+  Handlebars.registerHelper('weatherIcon', function(conditionID) {
     return new Handlebars.SafeString(
-      "<img src='http://openweathermap.org/img/w/" + iconID + ".png' class='img-responsive'>"
+      "<i class='owf owf-" + conditionID + " owf-3x'></i>"
+    );
+  });
+
+  Handlebars.registerHelper('weatherIconLarge', function(conditionID) {
+    return new Handlebars.SafeString(
+      "<i class='owf owf-" + conditionID + " owf-5x'></i>"
     );
   });
 
@@ -44,37 +49,45 @@ $(document).ready(function() {
   });
 
   function displayForecast() {
-    $("#weather-display").fadeOut();
-    $.get("http://api.openweathermap.org/data/2.5/forecast?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
-      if (data.cod == 200) {
-        data.list.splice(8); // too much data, remove forecasts except for first 8 (represents 24 hours)
+    $("#weather-display").fadeOut(function () {
+      $.get("http://api.openweathermap.org/data/2.5/forecast?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
+        if (data.cod == 200) {
 
-        for (var i = 0; i < data.list.length; i++) {
-          data.list[i]["dt_txt"] = convertUnixToDate(data.list[i].dt);
-          console.log(data.list[i].dt_txt);
+          data.list.splice(8); // too much data, remove forecasts except for first 8 (represents 24 hours)
+
+          for (var i = 0; i < data.list.length; i++) {
+            data.list[i]["dt_txt"] = convertUnixToDate(data.list[i].dt);
+            data.list[i]["main"]["temp"] = Math.round(data.list[i].main.temp);
+          }
+          var date = convertUnixToDate(data.dt);
+          data["date"] = date;
+          $("#forecast-display").html(forecastDisplayTemplate(data));
+          $("#forecast-display-partial").html(forecastPartialTemplate(data));
+          $("#forecast-display").fadeIn();
         }
-
-        var date = convertUnixToDate(data.dt);
-        data["date"] = date;
-        $("#forecast-display").html(forecastDisplayTemplate(data));
-        $("#forecast-display-partial").html(forecastPartialTemplate(data));
-      }
+        else {
+          // couldn't retrieve data from openweather
+        }
+      });
     });
-    $("#forecast-display").fadeIn();
   }
 
   function displayCurrentWeather() {
-    $("#forecast-display").fadeOut();
-    $.get("http://api.openweathermap.org/data/2.5/weather?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
-      if (data.cod == 200) {
-        console.log(data);
-
-        data["dt"] = convertUnixToDate(data.dt);
-        $("#weather-display").html(weatherDisplayTemplate(data));
-        $("#weather-display-partial").html(weatherPartialTemplate(data));
-      }
+    $("#forecast-display").fadeOut(function() {
+      $.get("http://api.openweathermap.org/data/2.5/weather?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
+        if (data.cod == 200) {
+          console.log(data);
+          data["dt"] = convertUnixToDate(data.dt);
+          data["main"]["temp"] = Math.round(data.main.temp);
+          $("#weather-display").html(weatherDisplayTemplate(data));
+          $("#weather-display-partial").html(weatherPartialTemplate(data));
+          $("#weather-display").fadeIn();
+        }
+        else {
+          // couldn't retrieve data from openweather
+        }
+      });
     });
-    $("#weather-display").fadeIn("slow");
   }
 
   function convertUnixToDate(unixTime) {
