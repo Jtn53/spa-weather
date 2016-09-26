@@ -1,29 +1,33 @@
 $(document).ready(function() {
+
+  // Initialize and compile all HandleBar templates
   var weatherDisplayTemplate = Handlebars.compile($("#weather-display-script").html());
   var forecastDisplayTemplate = Handlebars.compile($("#forecast-display-script").html());
-
   Handlebars.registerPartial("weather-partial", $("#weather-display-partial").html());
   var weatherPartialTemplate = Handlebars.compile($("#weather-display-partial").html());
-
   Handlebars.registerPartial("forecast-partial", $("#forecast-display-partial").html());
   var forecastPartialTemplate = Handlebars.compile($("#forecast-display-partial").html());
 
+  // register helper used to display medium-size weather icons
   Handlebars.registerHelper('weatherIcon', function(conditionID) {
     return new Handlebars.SafeString(
       "<i class='owf owf-" + conditionID + " owf-3x'></i>"
     );
   });
 
+  // register helper used to display large-size weather icon
   Handlebars.registerHelper('weatherIconLarge', function(conditionID) {
     return new Handlebars.SafeString(
       "<i class='owf owf-" + conditionID + " owf-5x'></i>"
     );
   });
 
+  // show current weather when search button clicked
   $("#searchbar-div").on("click", "#search-button", function() {
     displayCurrentWeather();
   });
 
+  // show current weather when "Enter" pressed in search bar
   $("#searchbar-input").on("keypress", function(e) {
     if (e.which === 13) {
       $(this).attr("disabled", "disabled");
@@ -48,6 +52,9 @@ $(document).ready(function() {
     displayCurrentWeather();
   });
 
+  /*
+  * Calls the openweather API for the current weather, processes data, and displays results
+  */
   function displayCurrentWeather() {
     $("#forecast-display").fadeOut(function() {
       $.get("http://api.openweathermap.org/data/2.5/weather?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
@@ -69,12 +76,14 @@ $(document).ready(function() {
     });
   }
 
+  /*
+  * Calls the openweather API for the 5 day forecast, processes data, and displays results
+  */
   function displayForecast() {
     $("#weather-display").fadeOut(function () {
       $.get("http://api.openweathermap.org/data/2.5/forecast?q=" + $("#searchbar-input").val() + "&units=metric&appid=f1bd4a0fa665e173cfc001f3bdd1d429", function(data, status){
         if (data.cod == 200) {
           data.list.splice(8); // too much data, remove forecasts except for first 8 (represents 24 hours)
-
           for (var i = 0; i < data.list.length; i++) {
             data.list[i]["dt_txt"] = convertUnixToDate(data.list[i].dt);
             data.list[i]["main"]["temp"] = Math.round(data.list[i].main.temp);
@@ -96,6 +105,9 @@ $(document).ready(function() {
     });
   }
 
+  /*
+  * Converts unix time to a readable date-time (9/25 8:30pm)
+  */
   function convertUnixToDate(unixTime) {
     var date = new Date(unixTime*1000); // multiply by 1000 so no milliseconds
     var month = date.getMonth() + 1; //add 1 here because 0 = January (should be 1 = January)
